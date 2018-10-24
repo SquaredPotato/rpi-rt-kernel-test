@@ -1,3 +1,0 @@
-/Users/stefanschokker/Documents/school/rtos/research/arduino/cmake-build-debug/CMakeFiles/rebuild_cache.dir
-/Users/stefanschokker/Documents/school/rtos/research/arduino/cmake-build-debug/CMakeFiles/edit_cache.dir
-/Users/stefanschokker/Documents/school/rtos/research/arduino/cmake-build-debug/CMakeFiles/arduino.dir
