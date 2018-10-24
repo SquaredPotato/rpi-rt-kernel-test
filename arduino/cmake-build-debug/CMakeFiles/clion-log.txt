@@ -1,0 +1,30 @@
+"/Applications/CLion 2018.3 EAP.app/Contents/bin/cmake/mac/bin/cmake" -DCMAKE_BUILD_TYPE=Debug -DCMAKE_C_COMPILER=/usr/bin/gcc -DCMAKE_CXX_COMPILER=/usr/bin/c++ -G "CodeBlocks - Unix Makefiles" /Users/stefanschokker/Documents/school/rtos/research/arduino
+-- The C compiler identification is AppleClang 10.0.0.10001044
+-- The CXX compiler identification is AppleClang 10.0.0.10001044
+-- Arduino SDK version 1.8.7: /Applications/Arduino.app/Contents/Java
+-- Determined Platform Header: /Applications/Arduino.app/Contents/Java/hardware/arduino/avr/cores/arduino/Arduino.h
+-- Arduino SDK version 1.8.7: /Applications/Arduino.app/Contents/Java
+-- Determined Platform Header: /Applications/Arduino.app/Contents/Java/hardware/arduino/avr/cores/arduino/Arduino.h
+-- Check for working C compiler: /usr/bin/gcc
+-- Check for working C compiler: /usr/bin/gcc -- works
+-- Detecting C compiler ABI info
+-- Detecting C compiler ABI info - done
+-- Detecting C compile features
+-- Detecting C compile features - done
+-- Arduino SDK version 1.8.7: /Applications/Arduino.app/Contents/Java
+-- Determined Platform Header: /Applications/Arduino.app/Contents/Java/hardware/arduino/avr/cores/arduino/Arduino.h
+-- Check for working CXX compiler: /usr/bin/c++
+-- Check for working CXX compiler: /usr/bin/c++ -- works
+-- Detecting CXX compiler ABI info
+-- Detecting CXX compiler ABI info - done
+-- Detecting CXX compile features
+-- Detecting CXX compile features - done
+CMake Error at cmake/Platform/Other/BoardManager.cmake:22 (message):
+  Unknown given board name, not defined in 'boards.txt'.  Check your
+  spelling.
+Call Stack (most recent call first):
+  CMakeLists.txt:17 (get_board_id)
+
+
+-- Configuring incomplete, errors occurred!
+See also "/Users/stefanschokker/Documents/school/rtos/research/arduino/cmake-build-debug/CMakeFiles/CMakeOutput.log".
