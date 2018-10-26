@@ -10,13 +10,15 @@ void setup() {
 void loop() {
   // Set signal to start reading
   digitalWrite(SIGNAL, HIGH);
-  delay(100); // Give pi some time to start reading
+  delay(200); // Give pi some time to start reading
   
-  for (int i = 0; i < 100000; i ++)
+  for (int i = 0; i < 500000; i ++)
   {
     digitalWrite(PULSE, HIGH);
     digitalWrite(PULSE, LOW);
-    delayMicroseconds(20);  // Minimal interval for pi to read
+    // Minimal period for real time kernal to handle each interrupt
+    delayMicroseconds(106);
+//    delay(1);
   }
 
   // Set signal to stop reading
