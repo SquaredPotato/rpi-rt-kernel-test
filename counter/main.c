@@ -3,63 +3,68 @@
 #include <wiringPi.h>
 #include <sys/time.h>
 
+#define TARGET 10000000
+
 // Physical pin numbers
-#define ADRSIGN 26
-#define PULSE 20
-#define LSIGN 21
+#define VER 26  // Arduino's ready signal   // White
+#define PLS 20  // Pulse input              // Yellow
+#define ACT 21  // Own ready signal         // Blue
+#define RES 16  // Timers reset signal      // Red
 
-void* isr();
+void counter();
+void resChange();
 
-int counted = 0;
+int counted = 0, reset = 0;
 
 int main()
 {
-	wiringPiSetupGpio();        // Setup without remapping
+	// Setup without remapping
+	wiringPiSetupGpio();
 
-	pinMode(LSIGN, OUTPUT);     // Signals when we're done counting
-	pinMode(ADRSIGN, INPUT);    // Signals while arduino is sending
-	pinMode(PULSE, INPUT);      // Arduino signal input
+	pinMode(VER, INPUT);
+	pinMode(PLS, INPUT);
+	pinMode(RES, INPUT);
+	pinMode(ACT, OUTPUT);
 
-	pullUpDnControl(PULSE, PUD_UP); // Avoid noise
+	pullUpDnControl(VER, PUD_DOWN);
+	pullUpDnControl(RES, PUD_DOWN);
+	pullUpDnControl(PLS, PUD_DOWN);
 
-	wiringPiISR(PULSE, INT_EDGE_BOTH, (void (*)(void)) isr);
+	// ISR to count pulses and to keep track of RESET
+	wiringPiISR(PLS, INT_EDGE_RISING, counter);
+	wiringPiISR(RES, INT_EDGE_FALLING, resChange);
 
-	// Wait for arduino to stop pulsing so we start on next set of pulses
-	printf("Syncing with arduino\n");
-	while (digitalRead(ADRSIGN))
-	{ }
-
-	while (1)
+	for (int i = 0; i < 100; i ++)
 	{
-		digitalWrite(LSIGN, LOW);
-
-		// Wait for arduino to start pulsing
-		printf("Waiting for arduino\n");
-		while (!digitalRead(ADRSIGN))
-		{ }
-		printf("Counting pulses...\n");
 		counted = 0;
+		reset = 0;
 
-		// Small delay to give arduino time to start sending
+		// Wait for timer
 		delay(1000);
 
-		// Wait for arduino to stop pulsing
-		while (digitalRead(ADRSIGN))
-		{
-			//			waitForInterrupt(PULSE, 0);
-			//			++ counted;
-		}
+		printf("Setting ACT to HIGH, iteration: %d\n", i);
+		digitalWrite(ACT, HIGH);
 
-		int totalCounted = counted;
-		digitalWrite(LSIGN, HIGH);
+		printf("Waiting for RES to unset\n");
+		while (digitalRead(RES) == HIGH)
+		{ }
 
-		printf("Counted pulses during ADRSIGN: %d\n", totalCounted);
+		// Note, without "delay(1)" the while loop won't escape, don't remove
+		printf("Counting pulses, target: %d\n", TARGET);
+		while (counted < TARGET)
+		{ delay(1); }
 
-		delay(3000);
+		digitalWrite(ACT, LOW);
+		printf("End of iteration\n");
 	}
 
 	return 0;
 }
 
-void* isr()
-{ counted ++; }
+void counter()
+{
+	counted ++;
+}
+
+void resChange()
+{ reset ++; }
