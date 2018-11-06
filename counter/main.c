@@ -14,7 +14,7 @@
 void counter();
 void resChange();
 
-int counted = 0, reset = 0;
+int counted = 0;
 
 int main()
 {
@@ -34,10 +34,9 @@ int main()
 	wiringPiISR(PLS, INT_EDGE_RISING, counter);
 	wiringPiISR(RES, INT_EDGE_FALLING, resChange);
 
-	for (int i = 39; i < 100; i ++)
+	for (int i = 0; i < 100; i ++)
 	{
 		counted = 0;
-		reset = 0;
 
 		// Wait for timer
 		delay(1000);
@@ -62,9 +61,4 @@ int main()
 }
 
 void counter()
-{
-	counted ++;
-}
-
-void resChange()
-{ reset ++; }
+{ counted ++; }
