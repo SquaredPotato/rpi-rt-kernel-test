@@ -12,7 +12,6 @@
 #define RES 16  // Timers reset signal      // Red
 
 void counter();
-void resChange();
 
 int counted = 0;
 
@@ -28,7 +27,6 @@ int main()
 
 	// ISR to count pulses and to keep track of RESET
 	wiringPiISR(PLS, INT_EDGE_RISING, counter);
-	wiringPiISR(RES, INT_EDGE_FALLING, resChange);
 
 	for (int i = 0; i < 100; i ++)
 	{
