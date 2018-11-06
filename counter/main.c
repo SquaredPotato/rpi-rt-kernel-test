@@ -14,30 +14,25 @@
 void counter();
 void resChange();
 
-int counted = 0, reset = 0;
+int counted = 0;
 
 int main()
 {
 	// Setup without remapping
 	wiringPiSetupGpio();
 
-	pinMode(VER, INPUT);
-	pinMode(PLS, INPUT);
-	pinMode(RES, INPUT);
+	pinMode(VER | PLS | RES, INPUT);
 	pinMode(ACT, OUTPUT);
 
-	pullUpDnControl(VER, PUD_DOWN);
-	pullUpDnControl(RES, PUD_DOWN);
-	pullUpDnControl(PLS, PUD_DOWN);
+	pullUpDnControl(VER | RES | PLS, PUD_DOWN);
 
 	// ISR to count pulses and to keep track of RESET
 	wiringPiISR(PLS, INT_EDGE_RISING, counter);
 	wiringPiISR(RES, INT_EDGE_FALLING, resChange);
 
-	for (int i = 39; i < 100; i ++)
+	for (int i = 0; i < 100; i ++)
 	{
 		counted = 0;
-		reset = 0;
 
 		// Wait for timer
 		delay(1000);
@@ -62,9 +57,4 @@ int main()
 }
 
 void counter()
-{
-	counted ++;
-}
-
-void resChange()
-{ reset ++; }
+{ counted ++; }

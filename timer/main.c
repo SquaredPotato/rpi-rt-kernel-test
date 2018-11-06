@@ -5,7 +5,7 @@
 #include <stdlib.h>
 
 #define FPATH "/home/pi/timer/times.csv"
-#define TARGET 10000000
+#define TARGET "10000000"
 
 #define VER 26  // Arduino's ready signal   // White
 #define ACT 21  // Counter's ready signal   // Blue
@@ -13,7 +13,7 @@
 
 int save(int iteration, struct timespec act_high, struct timespec act_low, struct timespec ver_high,
 		 struct timespec ver_low);
-char * toHuman(struct timespec machine);
+void toString(struct timespec machine, char *str);
 
 int main()
 {
@@ -32,7 +32,7 @@ int main()
 	printf("RES: HIGH\n");
 	digitalWrite(RES, HIGH);
 
-	for (int i = 39; i < 100; i ++)
+	for (int i = 0; i < 100; i ++)
 	{
 		printf("Waiting for arduino and counter, iteration: %d\n", i);
 		while (digitalRead(ACT) == LOW)
@@ -69,7 +69,6 @@ int main()
 		delay(100);
 	}
 
-
 	return 0;
 }
 
@@ -77,12 +76,9 @@ int save(int iteration, struct timespec act_high, struct timespec act_low, struc
 		 struct timespec ver_low)
 {
 	FILE *fp;
-
+	// Open file in append mode if it exists
 	if (access(FPATH, F_OK) == 0)
-	{
-		// Open file in append mode if it exists
-		fp = fopen(FPATH, "a");
-	}
+	{ fp = fopen(FPATH, "a"); }
 	else
 	{
 		// Open file if write mode if it doesn't
@@ -98,11 +94,8 @@ int save(int iteration, struct timespec act_high, struct timespec act_low, struc
 		fprintf(fp, "%s\n", "ITER_CNT, ACT_HIGH, ACT_LOW, VER_HIGH, VER_LOW, PLS_SND, PLS_REC");
 	}
 
-	char *ah = toHuman(act_high),
-		 *al = toHuman(act_low),
-		 *vh = toHuman(ver_high),
-		 *vl = toHuman(ver_low),
-		 ct[3], ps[24], *pr = "10000000"; // Target from "../counter/src/main.c:6"
+	// 10000000 is target from "../counter/src/main.c:6"
+	char *ah = malloc(64), *al = malloc(64), *vh = malloc(64), *vl = malloc(64), ct[3], ps[24];
 
 	sprintf(ct, "%d", iteration);
 
@@ -113,18 +106,18 @@ int save(int iteration, struct timespec act_high, struct timespec act_low, struc
 	// Convert to string
 	sprintf(ps, "%lf", freq * duration);
 
+	// Convert times to string
+	toString(act_high, ah);
+	toString(act_low, al);
+	toString(ver_high, vh);
+	toString(ver_low, vl);
+
 	// Write data to file
-	fprintf(fp, "%s, ", ct); // Count
-	fprintf(fp, "%s, ", ah); // ACT_HIGH
-	fprintf(fp, "%s, ", al); // ACT_LOW
-	fprintf(fp, "%s, ", vh); // VER_HIGH
-	fprintf(fp, "%s, ", vl); // VER_LOW
-	fprintf(fp, "%s, ", ps); // Pulses send
-	fprintf(fp, "%s\n", pr); // Pulses counted
+	fprintf(fp, "%s, %s, %s, %s, %s, %s, %s\n", ct, ah, al, vh, vl, ps, TARGET);
 
 	fclose(fp);
 
-	// Free memory that we allocated in toHuman();
+	// Free memory that we allocated in toString();
 	free(ah);
 	free(al);
 	free(vh);
@@ -133,12 +126,6 @@ int save(int iteration, struct timespec act_high, struct timespec act_low, struc
 	return 0;
 }
 
-char * toHuman(struct timespec machine)
-{
-//	struct tm *ptm = gmtime(&machine.tv_nsec);
-	char *buf = malloc(64);
-	sprintf(buf, "%lld.%.9ld", (long long)machine.tv_sec, machine.tv_nsec);
-//	strftime(buf, sizeof buf, "%T", ptm);
-	return buf;
-}
+void toString(struct timespec machine, char *str)
+{ sprintf(str, "%lld.%.9ld", (long long)machine.tv_sec, machine.tv_nsec); }
 
