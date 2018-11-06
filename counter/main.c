@@ -34,7 +34,7 @@ int main()
 	wiringPiISR(PLS, INT_EDGE_RISING, counter);
 	wiringPiISR(RES, INT_EDGE_FALLING, resChange);
 
-	for (int i = 0; i < 100; i ++)
+	for (int i = 39; i < 100; i ++)
 	{
 		counted = 0;
 		reset = 0;
