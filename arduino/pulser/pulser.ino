@@ -1,4 +1,3 @@
-
 #define PLS 28  // Pulse output         // Yellow
 #define ACT 27  // RP's ready signal    // Blue
 #define VER 24  // Own ready signal     // White
@@ -54,3 +53,4 @@ void actChange()
 
 void resChange()
 { resStatus = digitalRead(RES); }
+
